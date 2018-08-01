@@ -1,0 +1,9 @@
+<div class="trip" *ngFor="let trip of trips">
+  <div class="trip_details"> 
+    {{trip.title}}
+  </div>
+  <div>
+    <div class="action_button" (click)="deleteTrip(trip)">DELETE</div>
+    <div class="action_button" (click)="editTrip(trip)">EDIT</div>
+  </div>
+</div>

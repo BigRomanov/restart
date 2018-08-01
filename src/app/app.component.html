@@ -1,26 +1,36 @@
-<div id="header">
-  <span class="header_title">{{title}}</span> is the best app in the world
-  <div class="action_button" (click)="addTrip()">ADD TRIP</div>
-</div>
+<app-header [header_title]="title" (addTrip)="newTrip()"></app-header>
+
 <div id="content">
   <!-- List of trips -->
+
   <div *ngIf="!adding_trip">
-    <div class="trip" *ngFor="let trip of trips">
-      {{trip.title}}
-    </div>
+    <app-trip-list [trips]="trips" (onDelete)="deleteTrip($event)" (onEdit)="editTrip($event)"></app-trip-list>
   </div>
   <!-- New trip dialog -->
   <div id="add_trip_dialog" *ngIf="adding_trip">
     <!-- Fields -->
-    <div class="add_trip_field">
-      <p>Trip title:</p>
-      <input [(ngModel)]="newTrip.title" type="text">
-    </div>
-    <!-- Buttons -->
-    <div>
-      <div class="action_button" (click)="doAddTrip()">OK</div>
-      <div class="action_button" (click)="cancelAddTrip()">CANCEL</div>
-    </div>
+    <form  (ngSubmit)="onSubmit(currentTrip)" #tripForm="ngForm">
+      <div class="form_field">
+        <label for="title">Trip title:</label>
+        <input [(ngModel)]="currentTrip.title" type="text" name="title" required minlength="5" #spy>
+        <p>{{spy.className}}</p>
+      </div>
+      <div class="form_field">
+        <label for="location">Location:</label>
+        <input [(ngModel)]="currentTrip.location" type="text" name="location">
+      </div>
+      <div class="form_field">
+        <label for="country">Country:</label>
+        <select class="form-control" id="country" name="country" [(ngModel)]="currentTrip.country" >
+          <option *ngFor="let country of countries" [value]="country">{{country}}</option>
+        </select>
+      </div>
+      <!-- Buttons -->
+      <div>
+        <button type="submit" [disabled]="!tripForm.form.valid" class="action_button" >SUBMIT</button>
+        <button type="cancel" class="action_button" (click)="adding_trip=false">CANCEL</button>
+      </div>
+    </form>
   </div>
 
 </div> <!-- content -->

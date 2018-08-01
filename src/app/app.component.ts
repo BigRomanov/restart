@@ -1,42 +1,68 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import {TripService, Trip } from './shared';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  title = 'RESTART';
-  adding_trip = false;
+export class AppComponent implements OnInit {
+  
+  private title = 'RESTART';
 
-  newTrip = {
+
+  private adding_trip : Boolean = false;
+
+  private trips: Trip[] = [];
+
+  private countries = ['Italy', 'France', 'US', 'Israel'];
+
+  private currentTrip : Trip = new Trip({
   	title: ""
+  })
+
+  constructor(private tripService: TripService) {
+
   }
 
-  trips = [{
-  	title: 'Trip to London'
-  }, {
-  	title: 'Trip to Australia'
-  } ,{
-  	title: 'Trip to Barcelona'
-  }];
+  reload() {
+  	this.tripService.load().subscribe((result) => {
+      console.log("Result", result);
+      this.trips = result;
+    });
+  }
 
+  ngOnInit() {
+  	this.reload();
+  }
 
-  addTrip() {
+  newTrip() {
+  	this.currentTrip = new Trip();
   	this.adding_trip = true;
   }
 
-  cancelAddTrip() {
-  	console.log("cancelAddTrip");
-  	this.adding_trip = false;
+  editTrip(trip) {
+  	this.currentTrip = trip;
+  	this.adding_trip = true;
   }
 
-  doAddTrip() {
-  	console.log("doAddTrip");
-  	this.trips.push(this.newTrip);
+  onSubmit(trip) {
+    this.saveTrip(trip);
+  }
 
-  	this.newTrip = {title:""}
+  saveTrip(trip) {
+    console.log("saveTrip", trip);
+    this.tripService.save(trip).subscribe(result => {
+      this.reload();
+      this.adding_trip = false;
+    });
+  }
 
-  	this.adding_trip = false;
+  deleteTrip(trip) {
+    console.log("deleteTrip", trip);
+  	this.tripService.destroy(trip).subscribe(() => {
+      this.reload();  
+    });
+  	
   }
 }

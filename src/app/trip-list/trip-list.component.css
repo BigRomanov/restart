@@ -1,0 +1,13 @@
+.trip {
+	width:600px;
+	margin:auto;
+	height:40px;
+	padding:5px;
+	border:1px solid grey;
+	margin-bottom: 20px;
+
+}
+
+.trip_details {
+	float:left;
+}
